@@ -123,21 +123,36 @@ export default {
       if(this.form.id){
         request.put('/api/user',this.form).then(res=>{
           console.log(res)
-          this.$message({
-              message: '修改成功',
+          if(res.code === 200){
+            this.$message({
+              message: '更新成功',
               type: 'success'
             });
+          }
+          else {
+            this.$message({
+              type:"error",
+              message:res.message
+            })
+          }
           this.load();
           this.dialogVisible = false;
         })
       }else {
-        //问题代码
         request.post('/api/user',this.form).then(res=>{
         console.log(res)
-            this.$message({
-              message: '新增成功',
-              type: 'success'
-            });
+        if(res.code === 200){
+          this.$message({
+            message: '新增成功',
+            type: 'success'
+          });
+        }
+        else {
+          this.$message({
+            type:"error",
+            message:res.message
+          })
+        }
           this.load();
           this.dialogVisible = false;
       })

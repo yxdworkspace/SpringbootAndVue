@@ -3,30 +3,21 @@
   <el-row class="tac">
     <el-col>
       <el-menu
-          default-active="2"
+          default-active="user"
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose"
           style="width: 200px;min-height: calc(100vh - 50px);"
+          :default-openeds="[1]"
       >
         <el-sub-menu index="1">
           <template #title>
-            <el-icon><location /></el-icon>
-            <span>导航一</span>
+            <span>系统管理</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="1-1">item one</el-menu-item>
-            <el-menu-item index="1-2">item two</el-menu-item>
+            <el-menu-item index="user" :route="{path:'/'}">用户管理</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
-        <el-menu-item index="2">
-          <el-icon><icon-menu /></el-icon>
-          <span>导航二</span>
-        </el-menu-item>
-        <el-menu-item index="4">
-          <el-icon><setting /></el-icon>
-          <span>导航四</span>
-        </el-menu-item>
       </el-menu>
     </el-col>
   </el-row>
