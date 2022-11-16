@@ -22,45 +22,44 @@ public class UserController {
     @Resource
     UserMapper userMapper;
 
+    @PostMapping("/login")
+    public Result<?> login(@RequestBody User user){
+        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, user.getUsername()).eq(User::getPassword, user.getPassword()));
+        if (res == null) {
+            return Result.error("-1","用户名或密码错误!");
+        }
+        return Result.success(res);
+    }
+
     @PostMapping
     public Result<?> save(@RequestBody User user){
         if (user.getPassword() == null) {
             user.setPassword("123456");
         }
         userMapper.insert(user);
-        return Result.OK();
+        return Result.success();
     }
-
-    @PostMapping("/login")
-    public Result<?> login(@RequestBody User user){
-        User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, user.getUsername()).eq(User::getPassword, user.getPassword()));
-        if (res == null) {
-            return Result.error(-1,"用户名或密码错误!");
-        }
-        return Result.OK();
-    }
-
     @PostMapping("/register")
     public Result<?> register(@RequestBody User user){
         User res = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, user.getUsername()));
         if (res != null) {
-            return Result.error(-1,"用户名重复");
+            return Result.error("-1","用户名重复");
         }
         if(user.getPassword() ==null){
             user.setPassword("123456");
         }
         userMapper.insert(user);
-        return Result.OK();
+        return Result.success();
     }
     @PutMapping
     public Result<?> update(@RequestBody User user){
         userMapper.updateById(user);
-        return Result.OK();
+        return Result.success();
     }
     @DeleteMapping("/{id}")
     public Result<?> delete(@PathVariable Long id){
         userMapper.deleteById(id);
-        return Result.OK();
+        return Result.success();
     }
     @GetMapping
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
@@ -71,6 +70,6 @@ public class UserController {
             wrapper.like(User::getUsername,search);
         }
         Page<User> userPage = userMapper.selectPage(new Page<>(pageNum, pageSize),wrapper);
-        return Result.OK(userPage);
+        return Result.success(userPage);
     }
 }

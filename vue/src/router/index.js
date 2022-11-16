@@ -6,13 +6,23 @@ const routes = [
     path: '/',
     name: 'layout',
     component: layout,
-    redirect: '/home',
+    redirect: '/user',
     children: [
       {
-        path: 'home',
-        name: 'home',
-        component: () => import('@/views/HomeView.vue')
+        path: 'user',
+        name: 'user',
+        component: () => import('@/views/User.vue')
       },
+      {
+        path: 'book',
+        name: 'book',
+        component: () => import('@/views/Book.vue')
+      },
+      {
+        path: 'person',
+        name: 'person',
+        component: () => import('@/views/Person.vue')
+      }
     ]
   },
   {

@@ -55,22 +55,26 @@ export default {
     User,
     Lock
   },
+  created() {
+    sessionStorage.removeItem("user")
+  },
   methods:{
     login(){
-      this.$refs["form"].validate((valid,fields) => {
+      this.$refs['form'].validate((valid) => {
         if (valid) {
-          request.post('/api/user/login',this.form).then(res=>{
+          request.post("/user/login",this.form).then(res=>{
             console.log(res)
-            if(res.code === 200){
+            if(res.code === "0"){
               this.$message({
                 type:"success",
                 message:"登录成功"
               })
+              sessionStorage.setItem("user", JSON.stringify(res.data))
               this.$router.push("/")
             }else {
               this.$message({
                 type:"error",
-                message:res.message
+                message:res.msg
               })
             }
           })

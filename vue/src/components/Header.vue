@@ -5,14 +5,14 @@
     <div style="width: 100px;">
       <el-dropdown>
     <span class="el-dropdown-link">
-      张三
+
       <el-icon class="el-icon--right">
         <arrow-down/>
       </el-icon>
     </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>个人信息</el-dropdown-item>
+            <el-dropdown-item @click="$router.push('/person')">个人信息</el-dropdown-item>
             <el-dropdown-item @click="this.$router.push('/login')">退出系统</el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -23,11 +23,23 @@
 
 <script>
 import { ArrowDown } from '@element-plus/icons-vue'
+import request from "@/utils/request";
 export default {
   name: "Header",
   components:{
     ArrowDown
-  }
+  },
+  props:['user']
+  // created() {
+  //   this.load()
+  // },
+  // methods:{
+  //   load(){
+  //     request.post("/user").then(res =>{
+  //       console.log(res)
+  //     })
+  //   }
+  // }
 }
 </script>
 

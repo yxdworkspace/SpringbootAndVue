@@ -1,6 +1,6 @@
 <template>
   <div class="home" style="padding: 10px;">
-<!--    功能区域-->
+    <!--    功能区域-->
     <div style="margin: 10px 0">
       <el-button type="primary" @click="add">新增</el-button>
       <el-button type="primary">导入</el-button>
@@ -12,11 +12,10 @@
     </div>
     <el-table stripe :data="tableData" border style="width: 100%">
       <el-table-column sortable prop="id" label="ID" />
-      <el-table-column prop="username" label="用户名"  />
-      <el-table-column prop="nickname" label="昵称" />
-      <el-table-column prop="age" label="年龄" />
-      <el-table-column prop="gender" label="性别" />
-      <el-table-column prop="address" label="地址" />
+      <el-table-column prop="name" label="名称"  />
+      <el-table-column prop="price" label="单价" />
+      <el-table-column prop="author" label="作者" />
+      <el-table-column prop="createTime" label="出版时间" />
       <el-table-column fixed="right" label="操作">
         <template #default="scope">
           <el-button  type="default" size="small" @click="handleEdit(scope.row)">编辑</el-button>
@@ -43,20 +42,17 @@
           title="Tips"
           width="30%">
         <el-form label-width="120px">
-          <el-form-item label="用户名">
-            <el-input v-model="form.username" style="width: 80%;" />
+          <el-form-item label="名称">
+            <el-input v-model="form.name" style="width: 80%;" />
           </el-form-item>
-          <el-form-item label="昵称">
-            <el-input v-model="form.nickname" style="width: 80%;" />
+          <el-form-item label="单价">
+            <el-input v-model="form.price" style="width: 80%;" />
           </el-form-item>
-          <el-form-item label="年龄">
-            <el-input v-model="form.age" style="width: 80%;" />
+          <el-form-item label="作者">
+            <el-input v-model="form.author" style="width: 80%;" />
           </el-form-item>
-          <el-form-item label="性别">
-            <el-radio v-model="form.gender" label="男">男</el-radio>
-            <el-radio v-model="form.gender" label="女">女</el-radio>
-            <el-radio v-model="form.gender" label="未知">未知</el-radio>
-
+          <el-form-item label="出版时间">
+            <el-date-picker clearable style="width: 80%;" type="date" v-model="form.createTime" value-format="YYYY-MM-DD"></el-date-picker>
           </el-form-item>
           <el-form-item label="地址">
             <el-input type="textarea" v-model="form.address" style="width: 80%;"/>
@@ -79,7 +75,7 @@
 import request from "@/utils/request";
 
 export default {
-  name: 'HomeView',
+  name: 'Book',
   components: {
   },
   data() {
@@ -103,7 +99,7 @@ export default {
     },
     handleDelete(id){
       console.log(id)
-      request.delete("/api/user/"+id).then(res=>{
+      request.delete("/book/"+id).then(res=>{
         this.$message.success("删除成功");
         this.load();
       })
@@ -112,8 +108,9 @@ export default {
       this.pageSize = pageSize;
       this.load();
     },
-    handleCurrentChange(){
-
+    handleCurrentChange(pageNum){
+      this.currentPage =pageNum;
+      this.load();
     },
     add(){
       this.dialogVisible = true;
@@ -121,11 +118,29 @@ export default {
     },
     save(){
       if(this.form.id){
-        request.put('/api/user',this.form).then(res=>{
+        request.put('/book',this.form).then(res=>{
           console.log(res)
-          if(res.code === 200){
+          if(res.code === "0"){
             this.$message({
               message: '更新成功',
+              type: 'success'
+            });
+          }
+          else {
+            this.$message({
+              type:"error",
+              message:res.msg
+            })
+          }
+          this.load();
+          this.dialogVisible = false;
+        })
+      }else {
+        request.post('/book',this.form).then(res=>{
+          console.log(res)
+          if(res.code === "0"){
+            this.$message({
+              message: '新增成功',
               type: 'success'
             });
           }
@@ -138,28 +153,10 @@ export default {
           this.load();
           this.dialogVisible = false;
         })
-      }else {
-        request.post('/api/user',this.form).then(res=>{
-        console.log(res)
-        if(res.code === 200){
-          this.$message({
-            message: '新增成功',
-            type: 'success'
-          });
-        }
-        else {
-          this.$message({
-            type:"error",
-            message:res.message
-          })
-        }
-          this.load();
-          this.dialogVisible = false;
-      })
       }
     },
     load(){
-      request.get("/api/user",{
+      request.get("/book",{
         params:{
           pageNum:this.currentPage,
           pageSize:this.pageSize,
@@ -167,8 +164,8 @@ export default {
         }
       }).then(res=>{
         console.log(res)
-        this.tableData = res.result.records;
-        this.total = res.result.total;
+        this.tableData = res.data.records;
+        this.total = res.data.total;
       })
     }
   }

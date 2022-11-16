@@ -71,7 +71,7 @@ export default {
           message:"两次密码输入不一致!"
         })
       }
-      request.post('/api/user/register',this.form).then(res=>{
+      request.post('/user/register',this.form).then(res=>{
         console.log(res)
         if(res.code === 200){
           this.$message({

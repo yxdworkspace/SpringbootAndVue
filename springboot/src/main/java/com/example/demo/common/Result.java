@@ -1,101 +1,59 @@
 package com.example.demo.common;
 
-import java.io.Serializable;
-import lombok.Data;
+public class Result<T> {
+    private String code;
+    private String msg;
+    private T data;
 
-/**
- * 接口返回数据格式
- * fazcube
- */
-@Data
-public class Result<T> implements Serializable {
+    public String getCode() {
+        return code;
+    }
 
-    private static final long serialVersionUID = 1L;
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-    /**
-     * 成功标志
-     */
-    private boolean success = true;
+    public String getMsg() {
+        return msg;
+    }
 
-    /**
-     * 返回处理消息
-     */
-    private String message = "操作成功！";
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 
-    /**
-     * 返回代码
-     */
-    private Integer code = 0;
+    public T getData() {
+        return data;
+    }
 
-    /**
-     * 返回数据对象 data
-     */
-    private T result;
-
-    /**
-     * 时间戳
-     */
-    private long timestamp = System.currentTimeMillis();
+    public void setData(T data) {
+        this.data = data;
+    }
 
     public Result() {
-
     }
 
-    public Result<T> success() {
-        this.message = message;
-        this.code = 200;
-        this.success = true;
-        return this;
+    public Result(T data) {
+        this.data = data;
     }
 
-    public static<T> Result<T> OK() {
-        Result<T> r = new Result<T>();
-        r.setSuccess(true);
-        r.setCode(200);
-        r.setMessage("成功");
-        return r;
+    public static Result success() {
+        Result result = new Result<>();
+        result.setCode("0");
+        result.setMsg("成功");
+        return result;
     }
 
-    public static<T> Result<T> OK(T data) {
-        Result<T> r = new Result<T>();
-        r.setSuccess(true);
-        r.setCode(200);
-        r.setResult(data);
-        return r;
+    public static <T> Result<T> success(T data) {
+        Result<T> result = new Result<>(data);
+        result.setCode("0");
+        result.setMsg("成功");
+        return result;
     }
 
-    public static<T> Result<T> OK(String msg, T data) {
-        Result<T> r = new Result<T>();
-        r.setSuccess(true);
-        r.setCode(200);
-        r.setMessage(msg);
-        r.setResult(data);
-        return r;
+    public static Result error(String code, String msg) {
+        Result result = new Result();
+        result.setCode(code);
+        result.setMsg(msg);
+        return result;
     }
-
-    public static Result<Object> error(String msg) {
-        return error(500, msg);
-    }
-
-    public static Result<Object> error(int code, String msg) {
-        Result<Object> r = new Result<Object>();
-        r.setCode(code);
-        r.setMessage(msg);
-        r.setSuccess(false);
-        return r;
-    }
-
-    public Result<T> error500(String message) {
-        this.message = message;
-        this.code = 500;
-        this.success = false;
-        return this;
-    }
-    /**
-     * 无权限访问返回结果
-     */
-    public static Result<Object> noauth(String msg) {
-        return error(510, msg);
-    }
-
 }
