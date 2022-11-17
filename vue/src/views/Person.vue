@@ -66,7 +66,7 @@ export default {
     update() {
       request.put("/user", this.form).then(res => {
         console.log(res)
-        if (res.code === 200) {
+        if (res.code === "0") {
           this.$message({
             type: "success",
             message: "更新成功"

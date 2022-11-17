@@ -5,7 +5,7 @@
     <div style="width: 100px;">
       <el-dropdown>
     <span class="el-dropdown-link">
-
+           {{user.nickname}}
       <el-icon class="el-icon--right">
         <arrow-down/>
       </el-icon>
@@ -29,7 +29,7 @@ export default {
   components:{
     ArrowDown
   },
-  props:['user']
+  props: ["user"]
   // created() {
   //   this.load()
   // },

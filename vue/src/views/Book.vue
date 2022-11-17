@@ -16,6 +16,18 @@
       <el-table-column prop="price" label="单价" />
       <el-table-column prop="author" label="作者" />
       <el-table-column prop="createTime" label="出版时间" />
+      <el-table-column  label="封面">
+      <template #default="scope">
+        <el-image
+            style="width: 100px; height: 100px"
+            :src="scope.row.cover"
+            :preview-src-list="[scope.row.cover]"
+            :initial-index="4"
+            fit="cover"
+            preview-teleported
+        />
+      </template>
+      </el-table-column>
       <el-table-column fixed="right" label="操作">
         <template #default="scope">
           <el-button  type="default" size="small" @click="handleEdit(scope.row)">编辑</el-button>
@@ -54,8 +66,14 @@
           <el-form-item label="出版时间">
             <el-date-picker clearable style="width: 80%;" type="date" v-model="form.createTime" value-format="YYYY-MM-DD"></el-date-picker>
           </el-form-item>
-          <el-form-item label="地址">
-            <el-input type="textarea" v-model="form.address" style="width: 80%;"/>
+          <el-form-item label="封面">
+            <el-upload
+                ref="upload"
+                action="http://localhost:9090/files/upload"
+                :on-success="fileUploadSuccess"
+            >
+              <el-button type="primary">点击上传</el-button>
+            </el-upload>
           </el-form-item>
         </el-form>
         <template #footer>
@@ -96,6 +114,9 @@ export default {
     handleEdit(row){
       this.form = JSON.parse(JSON.stringify(row));
       this.dialogVisible = true;
+      this.$nextTick(() => {
+        this.$refs['upload'].clearFiles();
+      })
     },
     handleDelete(id){
       console.log(id)
@@ -115,6 +136,7 @@ export default {
     add(){
       this.dialogVisible = true;
       this.form={};
+      this.$refs['upload'].clearFiles();
     },
     save(){
       if(this.form.id){
@@ -167,6 +189,10 @@ export default {
         this.tableData = res.data.records;
         this.total = res.data.total;
       })
+    },
+    fileUploadSuccess(res){
+      console.log(res)
+      this.form.cover = res.data
     }
   }
 }
