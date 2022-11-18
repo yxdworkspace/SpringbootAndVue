@@ -10,22 +10,9 @@
     </div>
     <el-table stripe :data="tableData" border style="width: 100%">
       <el-table-column sortable prop="id" label="ID" />
-      <el-table-column prop="name" label="名称"  />
-      <el-table-column prop="price" label="单价" />
-      <el-table-column prop="author" label="作者" />
-      <el-table-column prop="createTime" label="出版时间" />
-      <el-table-column  label="封面">
-      <template #default="scope">
-        <el-image
-            style="width: 100px; height: 100px"
-            :src="scope.row.cover"
-            :preview-src-list="[scope.row.cover]"
-            :initial-index="4"
-            fit="cover"
-            preview-teleported
-        />
-      </template>
-      </el-table-column>
+      <el-table-column prop="title" label="标题" />
+      <el-table-column prop="author" label="作者"  />
+      <el-table-column prop="time" label="时间" />
       <el-table-column fixed="right" label="操作">
         <template #default="scope">
           <el-button  type="default" size="small" @click="handleEdit(scope.row)">编辑</el-button>
@@ -50,28 +37,10 @@
       <el-dialog
           v-model="dialogVisible"
           title="Tips"
-          width="30%">
+          width="50%">
         <el-form label-width="120px">
-          <el-form-item label="名称">
-            <el-input v-model="form.name" style="width: 80%;" />
-          </el-form-item>
-          <el-form-item label="单价">
-            <el-input v-model="form.price" style="width: 80%;" />
-          </el-form-item>
-          <el-form-item label="作者">
-            <el-input v-model="form.author" style="width: 80%;" />
-          </el-form-item>
-          <el-form-item label="出版时间">
-            <el-date-picker clearable style="width: 80%;" type="date" v-model="form.createTime" value-format="YYYY-MM-DD"></el-date-picker>
-          </el-form-item>
-          <el-form-item label="封面">
-            <el-upload
-                ref="upload"
-                action="http://localhost:9090/files/upload"
-                :on-success="fileUploadSuccess"
-            >
-              <el-button type="primary">点击上传</el-button>
-            </el-upload>
+          <el-form-item label="标题">
+            <el-input v-model="form.title" style="width: 50%;" />
           </el-form-item>
         </el-form>
         <template #footer>
@@ -89,11 +58,9 @@
 
 <script>
 import request from "@/utils/request";
-import '@wangeditor/editor/dist/css/style.css';
-
 
 export default {
-  name: 'Book',
+  name: 'News',
   components: {
   },
   data() {
@@ -104,7 +71,8 @@ export default {
       currentPage:1,
       total:10,
       pageSize:10,
-      tableData: []
+      tableData: [],
+      message:'',
     }
   },
   created() {
@@ -114,15 +82,10 @@ export default {
     handleEdit(row){
       this.form = JSON.parse(JSON.stringify(row));
       this.dialogVisible = true;
-      this.$nextTick(() => {
-        if(this.$refs['upload']){
-          this.$refs['upload'].clearFiles();
-        }
-      })
     },
     handleDelete(id){
       console.log(id)
-      request.delete("/book/"+id).then(res=>{
+      request.delete("/news/"+id).then(res=>{
         this.$message.success("删除成功");
         this.load();
       })
@@ -138,13 +101,10 @@ export default {
     add(){
       this.dialogVisible = true;
       this.form={};
-      if(this.$refs['upload']){
-        this.$refs['upload'].clearFiles();
-      }
     },
     save(){
       if(this.form.id){
-        request.put('/book',this.form).then(res=>{
+        request.put('/news',this.form).then(res=>{
           console.log(res)
           if(res.code === "0"){
             this.$message({
@@ -162,7 +122,7 @@ export default {
           this.dialogVisible = false;
         })
       }else {
-        request.post('/book',this.form).then(res=>{
+        request.post('/news',this.form).then(res=>{
           console.log(res)
           if(res.code === "0"){
             this.$message({
@@ -182,7 +142,7 @@ export default {
       }
     },
     load(){
-      request.get("/book",{
+      request.get("/news",{
         params:{
           pageNum:this.currentPage,
           pageSize:this.pageSize,
