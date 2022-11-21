@@ -25,6 +25,12 @@
           </el-popconfirm>
         </template>
       </el-table-column>
+      <el-table-column label="角色">
+        <template #default="scope">
+          <span v-if="scope.row.role === 1">管理员</span>
+          <span v-if="scope.row.role === 2">普通用户</span>
+        </template>
+      </el-table-column>
     </el-table>
     <div style="margin: 10px 0">
       <el-pagination

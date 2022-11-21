@@ -11,7 +11,7 @@
           :default-openeds="[1]"
           router
       >
-        <el-sub-menu index="1">
+        <el-sub-menu index="1" v-if="user.role === 1">
           <template #title>
             <span>系统管理</span>
           </template>
@@ -38,6 +38,7 @@ import {
   Location,
   Setting,
 } from '@element-plus/icons-vue'
+import request from "@/utils/request";
 export default {
   name: "Aside",
   components: {
@@ -55,11 +56,20 @@ export default {
     }
   },
   created() {
+    let userStr = sessionStorage.getItem("user") || "{}"
+    this.user = JSON.parse(userStr)
 
+    request.get("/user/" + this.user.id).then(res =>{
+      if(res.code === '0'){
+        this.user = res.data
+      }
+    }
+    )
   },
   data(){
     return{
-      path:this.$route.path
+      path:this.$route.path,
+      user:{}
     }
   }
 }
